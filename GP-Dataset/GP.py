@@ -55,7 +55,7 @@ if __name__ == '__main__':
     np.random.seed(42)
 
     # Parameters
-    N = 100
+    N = 400
     x_min, x_max = 0, 10
 
     #  Uniform Grid
