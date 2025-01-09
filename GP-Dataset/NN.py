@@ -74,7 +74,7 @@ if __name__ == '__main__':
 
     # Train NN
     NN_model = NN()
-    NN_model.fit(X_train, Y_train, epochs=100)
+    NN_model.fit(X_train, Y_train)
 
     # Predict
     Y_pred = NN_model.predict(X).detach()
