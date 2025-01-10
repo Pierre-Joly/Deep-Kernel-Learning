@@ -34,7 +34,7 @@ class DKLModel(gpytorch.models.ExactGP):
         covar_x = self.covar_module(projected_x)
         return gpytorch.distributions.MultivariateNormal(mean_x, covar_x)
     
-    def fit(self, X_train, y_train, epochs=100):
+    def fit(self, X_train, Y_train, epochs=100):
         self.train()
         self.likelihood.train()
         optimizer = torch.optim.AdamW(self.parameters(), lr=0.01)
@@ -43,7 +43,7 @@ class DKLModel(gpytorch.models.ExactGP):
         for epoch in range(epochs):
             optimizer.zero_grad()
             output = self(X_train)
-            loss = -mll(output, y_train)
+            loss = -mll(output, Y_train)
             loss.backward()
             optimizer.step()
             print(f"Epoch {epoch+1}/{epochs}: Train Loss = {loss.item():.4f}")

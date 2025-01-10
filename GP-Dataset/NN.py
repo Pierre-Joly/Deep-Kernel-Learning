@@ -24,7 +24,7 @@ class NN:
         optimizer = torch.optim.Adam(self.model.parameters(), lr=0.01)
         data_loader = torch.utils.data.DataLoader(
             torch.utils.data.TensorDataset(X_train, y_train),
-            batch_size=8,
+            batch_size=64,
             shuffle=True
         )
         self.model.train()
@@ -46,6 +46,7 @@ class NN:
 
 if __name__ == '__main__':
     np.random.seed(42)
+    torch.manual_seed(42)
 
     # Parameters
     N = 400
