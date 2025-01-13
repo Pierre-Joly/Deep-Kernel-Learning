@@ -5,17 +5,15 @@ from gpytorch.kernels import ScaleKernel, RBFKernel
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from create_data import square_exponential_kernel
+from create_data import create_kernel, create_mean_func
 
 class SimpleNN(nn.Module):
     def __init__(self):
         super(SimpleNN, self).__init__()
         self.net = nn.Sequential(
-            nn.Linear(1, 50),
-            nn.ReLU(),
-            nn.Linear(50, 50),
-            nn.ReLU(),
-            nn.Linear(50, 1)
+            nn.Linear(1, 100),
+            nn.LeakyReLU(),
+            nn.Linear(100, 1)
         )
         
     def forward(self, x):
@@ -62,8 +60,8 @@ if __name__ == "__main__":
     length_scale = 1.0
     sigma_f = 1.0
     sigma_n = 0.1
-    kernel_func = lambda x1, x2: square_exponential_kernel(x1, x2, length_scale, sigma_f, sigma_n)
-    mean_func = lambda x: np.zeros(x.shape[0])
+    kernel_func = create_kernel(length_scale, sigma_f)
+    mean_func = create_mean_func(0.0)
     
     # Simulate GP
     Y = np.random.multivariate_normal(mean_func(X), kernel_func(X, X))

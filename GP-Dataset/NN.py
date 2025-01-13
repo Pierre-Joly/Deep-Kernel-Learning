@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from create_data import gaussian_process, square_exponential_kernel
+from create_data import gaussian_process, create_kernel, create_mean_func
 import torch
 import torch.nn as nn
 
@@ -11,20 +11,18 @@ class NN:
 
     def _build_model(self):
         model = nn.Sequential(
-            nn.Linear(1, 50),
-            nn.ReLU(),
-            nn.Linear(50, 50),
-            nn.ReLU(),
-            nn.Linear(50, 1)
+            nn.Linear(1, 100),
+            nn.LeakyReLU(),
+            nn.Linear(100, 1)
         )
         return model
 
-    def fit(self, X_train, y_train, epochs=100):
+    def fit(self, X_train, y_train, epochs=1000):
         criterion = nn.MSELoss()
-        optimizer = torch.optim.Adam(self.model.parameters(), lr=0.01)
+        optimizer = torch.optim.AdamW(self.model.parameters(), lr=0.01)
         data_loader = torch.utils.data.DataLoader(
             torch.utils.data.TensorDataset(X_train, y_train),
-            batch_size=64,
+            batch_size=len(X_train),
             shuffle=True
         )
         self.model.train()
@@ -59,11 +57,11 @@ if __name__ == '__main__':
     length_scale = 1.0
     sigma_f = 1.0
     sigma_n = 0.1
-    kernel_func = lambda x1, x2: square_exponential_kernel(x1, x2, length_scale, sigma_f, sigma_n)
-    mean_func = lambda x: np.zeros(x.shape[0])
+    kernel_func = create_kernel(length_scale, sigma_f)
+    mean_func = create_mean_func(0.0)
 
     # Simulate GP
-    Y = gaussian_process(X, mean_func, kernel_func)
+    Y = gaussian_process(X, mean_func, kernel_func, sigma_n)
 
     # Split Data
     X_train, _, Y_train, _ = train_test_split(X, Y, test_size=0.5)
