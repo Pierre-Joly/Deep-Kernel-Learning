@@ -4,6 +4,8 @@ from create_data import gaussian_process, square_exponential_kernel, create_kern
 from sklearn.model_selection import train_test_split
 from scipy.optimize import minimize
 
+JITTER = 1e-6
+
 # Log Marginal Likelihood
 def log_marginal_likelihood(params, X_train, Y_train):
     length_scale, sigma_f, sigma_n = params
@@ -11,7 +13,7 @@ def log_marginal_likelihood(params, X_train, Y_train):
     
     # Kernel matrix
     K = square_exponential_kernel(X_train, X_train, length_scale, sigma_f)
-    K += sigma_n**2 * np.eye(n)  # Add noise
+    K += (sigma_n**2 + JITTER) * np.eye(n)  # Add noise
 
     # Cholesky decomposition for stability
     try:
@@ -53,7 +55,8 @@ def optimize_hyperparameters(X_train, Y_train):
 
 # Fit Gaussian Process
 def fit_gaussian_process(X_train, Y_train, X_test, kernel_func, sigma_n):
-    K = kernel_func(X_train, X_train) + sigma_n**2 * np.eye(len(X_train))
+
+    K = kernel_func(X_train, X_train) + (sigma_n**2 + JITTER) * np.eye(len(X_train))
     K_s = kernel_func(X_train, X_test)
     K_ss = kernel_func(X_test, X_test) + sigma_n**2 * np.eye(len(X_test))
 
