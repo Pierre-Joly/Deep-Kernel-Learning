@@ -32,7 +32,6 @@ def log_marginal_likelihood(params, X_train, Y_train):
 
     return neg_log_likelihood
 
-
 # Hyperparameter Optimization
 def optimize_hyperparameters(X_train, Y_train):
     # Initial guess and bounds
@@ -55,7 +54,6 @@ def optimize_hyperparameters(X_train, Y_train):
 
 # Fit Gaussian Process
 def fit_gaussian_process(X_train, Y_train, X_test, kernel_func, sigma_n):
-
     K = kernel_func(X_train, X_train) + (sigma_n**2 + JITTER) * np.eye(len(X_train))
     K_s = kernel_func(X_train, X_test)
     K_ss = kernel_func(X_test, X_test) + sigma_n**2 * np.eye(len(X_test))
